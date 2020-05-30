@@ -7,6 +7,16 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * job handler
  *
+ * + 抽象任务处理类
+ * 		+ 包含3个场景方法
+ * 			+ 执行：核心执行方法，必须实现
+ * 			+ 初始化：可以不处理，有默认空实现
+ * 			+ 消耗：	可以不处理，有默认空实现
+ * 		+ 三个常见返回
+ * 			+ 成功
+ * 			+ 失败
+ * 			+ 超时失败
+ *
  * @author xuxueli 2015-12-19 19:06:38
  */
 public abstract class IJobHandler {

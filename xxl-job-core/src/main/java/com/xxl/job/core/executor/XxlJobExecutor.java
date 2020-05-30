@@ -206,11 +206,27 @@ public class XxlJobExecutor  {
 
 
     // ---------------------- job handler repository ----------------------
+    /**
+     * 任务的仓库，使用并发Map，防止线程不安全
+     */
     private static ConcurrentMap<String, IJobHandler> jobHandlerRepository = new ConcurrentHashMap<String, IJobHandler>();
+
+    /**
+     * 将新增的任务，注册到仓库
+     * @param name
+     * @param jobHandler
+     * @return
+     */
     public static IJobHandler registJobHandler(String name, IJobHandler jobHandler){
         logger.info(">>>>>>>>>>> xxl-job register jobhandler success, name:{}, jobHandler:{}", name, jobHandler);
         return jobHandlerRepository.put(name, jobHandler);
     }
+
+    /**
+     * 根据名称加载任务
+     * @param name
+     * @return
+     */
     public static IJobHandler loadJobHandler(String name){
         return jobHandlerRepository.get(name);
     }

@@ -8,6 +8,13 @@ import java.lang.reflect.Method;
 
 /**
  * @author xuxueli 2019-12-11 21:12:18
+ *
+ * 执行器对象
+ * + 用于新版的基于方法的任务注册方式，将bean和三个方法组织在一起
+ *
+ * 继承
+ *  + IJobHandler：统一定时任务的抽象对象
+ *
  */
 public class MethodJobHandler extends IJobHandler {
 
