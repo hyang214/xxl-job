@@ -16,17 +16,33 @@ import java.util.concurrent.TimeUnit;
  * job file clean thread
  *
  * @author xuxueli 2017-12-29 16:23:43
+ *
+ * + 用于清理日志文件
+ *      + 使用一个线程执行，线程被设置为守护进程，因为其应随着工作线程结束而结束
+ *      + 设置为单例（饿汉），因为只需要一个清理实例
  */
 public class JobLogFileCleanThread {
     private static Logger logger = LoggerFactory.getLogger(JobLogFileCleanThread.class);
 
+    /**
+     * 设置为单例
+     */
     private static JobLogFileCleanThread instance = new JobLogFileCleanThread();
     public static JobLogFileCleanThread getInstance(){
         return instance;
     }
 
+    /** 清理线程 **/
     private Thread localThread;
+
+    /** 暂停标志位，设为为volatile，因为可能是不同的线程来修改，需要每次都从内存拉取最新的 **/
     private volatile boolean toStop = false;
+
+    /**
+     * 清理线程
+     * + 将文件夹日期超过保存时间的目录，下属的全部文件删除
+     * @param logRetentionDays
+     */
     public void start(final long logRetentionDays){
 
         // limit min value
@@ -105,6 +121,14 @@ public class JobLogFileCleanThread {
         localThread.start();
     }
 
+    /**
+     * 停止
+     *
+     * + 将标志位改成 true
+     * + 如果没有启动清理线程，那么结束
+     * + 如果有那么将其打断
+     * + 将当前线程阻塞到 清理线程死亡
+     */
     public void toStop() {
         toStop = true;
 

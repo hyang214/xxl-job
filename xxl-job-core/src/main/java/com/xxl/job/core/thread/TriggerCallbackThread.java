@@ -20,6 +20,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by xuxueli on 16/7/22.
+ *
+ * 回调线程
+ *  + 单例（饿汉）模式
+ *  + 一个队列来存储完备的任务执行结果
+ *  + 守护进程，自动结束
+ *  + 不断从队列中取出结果，进行异步回调
  */
 public class TriggerCallbackThread {
     private static Logger logger = LoggerFactory.getLogger(TriggerCallbackThread.class);
@@ -31,6 +37,8 @@ public class TriggerCallbackThread {
 
     /**
      * job results callback queue
+     *
+     * 存储任务执行结果
      */
     private LinkedBlockingQueue<HandleCallbackParam> callBackQueue = new LinkedBlockingQueue<HandleCallbackParam>();
     public static void pushCallBack(HandleCallbackParam callback){
@@ -44,6 +52,16 @@ public class TriggerCallbackThread {
     private Thread triggerCallbackThread;
     private Thread triggerRetryCallbackThread;
     private volatile boolean toStop = false;
+
+    /**
+     * 启动任务执行结果回调线程
+     * + 如果没有管理页面，不需要进行回调，不启动线程
+     * + 如果没有标志位结束，那么不断从回调结果队列中取出数据，进行回调
+     * + 通过 take方式阻塞在队列上，等待有结果返回
+     * + 一旦有数据，那么通过drainTo将全部的结果取出，和刚才取出的合并
+     * + 对于全部的数据进行回调
+     * + 如果标志位改成结束，那么最后再进行一次回调，把队列中的数据处理一次
+     */
     public void start() {
 
         // valid
@@ -130,6 +148,12 @@ public class TriggerCallbackThread {
         triggerRetryCallbackThread.start();
 
     }
+
+    /**
+     * 停止回调线程
+     * + 修改标志位
+     * +
+     */
     public void toStop(){
         toStop = true;
         // stop callback, interrupt and wait

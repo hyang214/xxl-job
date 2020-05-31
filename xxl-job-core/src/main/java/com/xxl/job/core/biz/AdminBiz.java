@@ -8,6 +8,11 @@ import java.util.List;
 
 /**
  * @author xuxueli 2017-07-27 21:52:49
+ *
+ * 管理器接口
+ *  + 回调：任务的回调
+ *  + 注册：应用的注册
+ *  + 注销：应用的注销
  */
 public interface AdminBiz {
 

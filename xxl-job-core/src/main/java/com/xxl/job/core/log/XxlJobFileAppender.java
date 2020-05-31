@@ -64,6 +64,7 @@ public class XxlJobFileAppender {
 	/**
 	 * log filename, like "logPath/yyyy-MM-dd/9999.log"
 	 *
+	 * + 创建日志
 	 * @param triggerDate
 	 * @param logId
 	 * @return

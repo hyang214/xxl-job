@@ -12,6 +12,12 @@ import java.util.List;
  * admin api test
  *
  * @author xuxueli 2017-07-28 22:14:52
+ *
+ * 管理平台客户端
+ *  + 实现 AdminBiz 接口
+ *  + 创建传入，管理地址 和 token
+ *  + 通过http接口调用admin，进行处理
+ *
  */
 public class AdminBizClient implements AdminBiz {
 

@@ -12,6 +12,11 @@ import java.io.IOException;
  * file tool
  *
  * @author xuxueli 2017-12-29 17:56:48
+ *
+ * 文件工具
+ *  + 递归删除文件
+ *  + 写文件，将内容写入文件
+ *  + 读文件内容，使用byte读入
  */
 public class FileUtil {
     private static Logger logger = LoggerFactory.getLogger(FileUtil.class);

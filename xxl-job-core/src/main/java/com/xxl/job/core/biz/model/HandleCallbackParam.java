@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 /**
  * Created by xuxueli on 17/3/2.
+ *
+ * 任务处理结果封装
+ *  + 包含任务的日志Id、时间、执行结果
  */
 public class HandleCallbackParam implements Serializable {
     private static final long serialVersionUID = 42L;

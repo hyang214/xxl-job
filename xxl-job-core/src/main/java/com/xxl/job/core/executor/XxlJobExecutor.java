@@ -31,12 +31,19 @@ public class XxlJobExecutor  {
     private static final Logger logger = LoggerFactory.getLogger(XxlJobExecutor.class);
 
     // ---------------------- param ----------------------
+    /** 任务管理平台地址 **/
     private String adminAddresses;
+    /** 应用名 **/
     private String appName;
+    /** 本机ip，可以通过外部注入，如果不注入，那么会自动获取 **/
     private String ip;
+    /** xxl-job监听端口，可以通过外部注入，如果不注入，那么会自动获取 **/
     private int port;
+    /** 连接管理页面的token **/
     private String accessToken;
+    /** 日志地址，有默认值 **/
     private String logPath;
+    /** 日志保留天数 **/
     private int logRetentionDays;
 
     public void setAdminAddresses(String adminAddresses) {
@@ -61,7 +68,16 @@ public class XxlJobExecutor  {
         this.logRetentionDays = logRetentionDays;
     }
 
-
+    /**
+     * 1. 初始化日志路径，创建目录
+     * 2. 初始化管理端配置
+     * 3. 初始化日志清理线程
+     * 4. 初始化执行结果回调线程
+     * 5. 从9999开始搜索未使用端口，使用工具获取本地ip
+     * 6.
+     *
+     * @throws Exception
+     */
     // ---------------------- start + stop ----------------------
     public void start() throws Exception {
 
@@ -83,6 +99,17 @@ public class XxlJobExecutor  {
         ip = (ip!=null&&ip.trim().length()>0)?ip: IpUtil.getIp();
         initRpcProvider(ip, port, appName, accessToken);
     }
+
+    /**
+     * 销毁
+     *
+     * 1. 暂停本地服务的provider
+     * 2. 如果当前还有未结束的任务线程，将其kill
+     * 3. 清空 任务线程 和 任务句柄的 map
+     * 4. 停止日志清理线程
+     * 5. 停止回调线程
+     *
+     */
     public void destroy(){
         // destory executor-server
         stopRpcProvider();
@@ -107,6 +134,7 @@ public class XxlJobExecutor  {
 
 
     // ---------------------- admin-client (rpc invoker) ----------------------
+    /** 远程管理服务器配置 **/
     private static List<AdminBiz> adminBizList;
     private static Serializer serializer = new HessianSerializer();
     private void initAdminBizList(String adminAddresses, String accessToken) throws Exception {
@@ -135,6 +163,14 @@ public class XxlJobExecutor  {
     // ---------------------- executor-server (rpc provider) ----------------------
     private XxlRpcProviderFactory xxlRpcProviderFactory = null;
 
+    /**
+     * 初始化远程调用的provider，注册到xxl-rpc的注册中心
+     * @param ip
+     * @param port
+     * @param appName
+     * @param accessToken
+     * @throws Exception
+     */
     private void initRpcProvider(String ip, int port, String appName, String accessToken) throws Exception {
 
         // init, provider factory
@@ -195,6 +231,9 @@ public class XxlJobExecutor  {
 
     }
 
+    /**
+     * 暂停provider
+     */
     private void stopRpcProvider() {
         // stop provider factory
         try {
