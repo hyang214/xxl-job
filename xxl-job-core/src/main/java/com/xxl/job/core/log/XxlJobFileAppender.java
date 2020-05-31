@@ -69,6 +69,7 @@ public class XxlJobFileAppender {
 	 * @param logId
 	 * @return
 	 */
+
 	public static String makeLogFileName(Date triggerDate, long logId) {
 
 		// filePath/yyyy-MM-dd

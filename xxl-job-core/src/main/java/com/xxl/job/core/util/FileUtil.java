@@ -52,7 +52,12 @@ public class FileUtil {
         }
     }
 
-
+    /**
+     * 写入文件内容
+     * 用于 失败重试内容的写入
+     * @param file
+     * @param data
+     */
     public static void writeFileContent(File file, byte[] data) {
 
         // file

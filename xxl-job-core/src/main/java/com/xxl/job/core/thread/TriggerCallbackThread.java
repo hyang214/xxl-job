@@ -61,6 +61,10 @@ public class TriggerCallbackThread {
      * + 一旦有数据，那么通过drainTo将全部的结果取出，和刚才取出的合并
      * + 对于全部的数据进行回调
      * + 如果标志位改成结束，那么最后再进行一次回调，把队列中的数据处理一次
+     *
+     * 启动回调失败重试线程
+     * + 从文件中读取失败的内容，然后进行调用
+     * + 每个文件就是一次失败的调用（多个一批任务处理的结果）
      */
     public void start() {
 
@@ -180,6 +184,11 @@ public class TriggerCallbackThread {
 
     /**
      * do callback, will retry if error
+     *
+     * + 将处理结果反馈给管理平台
+     * + 多个管理平台，逐个回调
+     * + 如果回调成功，那么结束
+     * + 否则写入回调失败的文件日志
      * @param callbackParamList
      */
     private void doCallback(List<HandleCallbackParam> callbackParamList){
@@ -206,6 +215,8 @@ public class TriggerCallbackThread {
 
     /**
      * callback log
+     *
+     * + 记录回调日志，根据任务id进行记录
      */
     private void callbackLog(List<HandleCallbackParam> callbackParamList, String logContent){
         for (HandleCallbackParam callbackParam: callbackParamList) {
@@ -221,6 +232,14 @@ public class TriggerCallbackThread {
     private static String failCallbackFilePath = XxlJobFileAppender.getLogPath().concat(File.separator).concat("callbacklog").concat(File.separator);
     private static String failCallbackFileName = failCallbackFilePath.concat("xxl-job-callback-{x}").concat(".log");
 
+    /**
+     * 将回调失败的处理结果，写入文件日志
+     * 用于重试
+     * 日志名称为毫秒时间戳，如果已经存在，那么多次重试，写入新的文件
+     * 数据会进行序列化
+     *
+     * @param callbackParamList
+     */
     private void appendFailCallbackFile(List<HandleCallbackParam> callbackParamList){
         // valid
         if (callbackParamList==null || callbackParamList.size()==0) {
@@ -242,6 +261,12 @@ public class TriggerCallbackThread {
         FileUtil.writeFileContent(callbackLogFile, callbackParamList_bytes);
     }
 
+    /**
+     * 回调重试处理
+     * + 获取回调失败文件目录
+     * + 读取下面的全部文件，每个文件都是一次失败的回调
+     * + 逐个重试，读取后就删除原文件，即使再次失败，由处理线程再次写入文件
+     */
     private void retryFailCallbackFile(){
 
         // valid
