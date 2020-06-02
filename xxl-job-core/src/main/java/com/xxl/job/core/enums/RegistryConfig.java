@@ -15,6 +15,11 @@ public class RegistryConfig {
      */
     public static final int DEAD_TIMEOUT = BEAT_TIMEOUT * 3;
 
+    /**
+     * 注册类型
+     * + 执行器
+     * + 管理端
+     */
     public enum RegistType{ EXECUTOR, ADMIN }
 
 }

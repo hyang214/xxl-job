@@ -26,6 +26,8 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by xuxueli on 2016/3/2 21:14.
+ *
+ * 核心类
  */
 public class XxlJobExecutor  {
     private static final Logger logger = LoggerFactory.getLogger(XxlJobExecutor.class);
@@ -74,7 +76,7 @@ public class XxlJobExecutor  {
      * 3. 初始化日志清理线程
      * 4. 初始化执行结果回调线程
      * 5. 从9999开始搜索未使用端口，使用工具获取本地ip
-     * 6.
+     * 6. 注册rpc服务
      *
      * @throws Exception
      */
@@ -199,6 +201,9 @@ public class XxlJobExecutor  {
 
     }
 
+    /**
+     * 执行器注册线程
+     */
     public static class ExecutorServiceRegistry extends ServiceRegistry {
 
         @Override

@@ -12,6 +12,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by xuxueli on 17/3/2.
+ *
+ * 执行器注册线程  心跳用途
+ * + 单例（饿汉）模式
+ * + 将本地的执行器注册到管理端
+ * + 类似心跳的逻辑，每30秒注册一次，注册完成后sleep
+ * + 如果stop标志位改成true，那么调用remove方法，将执行器注销
  */
 public class ExecutorRegistryThread {
     private static Logger logger = LoggerFactory.getLogger(ExecutorRegistryThread.class);
@@ -114,6 +120,11 @@ public class ExecutorRegistryThread {
         registryThread.start();
     }
 
+    /**
+     * 注销方法
+     * + 修改标志位，将线程结束
+     * + 然后阻塞在线程结束上
+     */
     public void toStop() {
         toStop = true;
         // interrupt and wait
